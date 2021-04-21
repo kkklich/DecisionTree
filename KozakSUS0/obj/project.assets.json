@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rysio\\source\\repos\\Kozak SUS\\KozakSUS0\\KozakSUS0\\KozakSUS0.csproj",
+      "projectUniqueName": "C:\\Users\\rysio\\source\\repos\\Kozak SUS\\KozakSUS0\\DecisionTree\\KozakSUS0\\KozakSUS0.csproj",
       "projectName": "KozakSUS0",
-      "projectPath": "C:\\Users\\rysio\\source\\repos\\Kozak SUS\\KozakSUS0\\KozakSUS0\\KozakSUS0.csproj",
+      "projectPath": "C:\\Users\\rysio\\source\\repos\\Kozak SUS\\KozakSUS0\\DecisionTree\\KozakSUS0\\KozakSUS0.csproj",
       "packagesPath": "C:\\Users\\rysio\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rysio\\source\\repos\\Kozak SUS\\KozakSUS0\\KozakSUS0\\obj\\",
+      "outputPath": "C:\\Users\\rysio\\source\\repos\\Kozak SUS\\KozakSUS0\\DecisionTree\\KozakSUS0\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\rysio\\AppData\\Roaming\\NuGet\\NuGet.Config",

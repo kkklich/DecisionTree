@@ -24,3 +24,16 @@ C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\KozakSUS0\obj\Debug\netcoreapp3.
 C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.dll
 C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.pdb
 C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.genruntimeconfig.cache
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\bin\Debug\netcoreapp3.1\KozakSUS0.exe
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\bin\Debug\netcoreapp3.1\KozakSUS0.deps.json
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\bin\Debug\netcoreapp3.1\KozakSUS0.runtimeconfig.json
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\bin\Debug\netcoreapp3.1\KozakSUS0.runtimeconfig.dev.json
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\bin\Debug\netcoreapp3.1\KozakSUS0.dll
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\bin\Debug\netcoreapp3.1\KozakSUS0.pdb
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.csprojAssemblyReference.cache
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.AssemblyInfoInputs.cache
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.AssemblyInfo.cs
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.csproj.CoreCompileInputs.cache
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.dll
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.pdb
+C:\Users\rysio\source\repos\Kozak SUS\KozakSUS0\DecisionTree\KozakSUS0\obj\Debug\netcoreapp3.1\KozakSUS0.genruntimeconfig.cache
