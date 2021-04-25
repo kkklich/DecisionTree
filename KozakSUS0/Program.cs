@@ -14,7 +14,7 @@ namespace KozakSUS0
         readonly static List<double> listInfo = new List<double>();
         readonly static List<double> listGain = new List<double>();
         readonly static List<double> listSplitInfo = new List<double>();
-        readonly static List<double> listGainRatio = new List<double>();
+        static List<double> listGainRatio2 = new List<double>();
         
         static int nrColumn = 0;
         static int maxNrRow = 0;
@@ -24,18 +24,18 @@ namespace KozakSUS0
 
         static void Main()
         {
-            string[,] tabData;
+            string[,] tabData1;
 
             string path = "D:/Dokumenty/Studia/mgr2/Systemy uczące się/gielda.txt";
+           // string path = "D:/Dokumenty/Studia/mgr2/Systemy uczące się/temp.txt";
             SizeTab(path);
 
-            tabData=ReadFile(path);
-            Console.WriteLine();
-            Show(tabData);
-            Console.WriteLine();
+            tabData1 = ReadFile(path);          
+            //ShowTab(tabData1);
+            //Console.WriteLine();
 
-            BudowaDrzewa(tabData);
-           
+            BudowaDrzewa(tabData1);
+
             Console.ReadKey();
         }
 
@@ -54,15 +54,13 @@ namespace KozakSUS0
             }
         }
 
-
         //Wczytywanie pliku
         static string[,] ReadFile(string path)
         {
             StreamReader reader = new StreamReader(path);
             string line;
-           string[,] tabXY = new string[nrColumn,maxNrRow];
-            int counter = 0;
-            
+            string[,] tabXY = new string[nrColumn,maxNrRow];
+            int counter = 0;            
 
             while ((line = reader.ReadLine()) != null)
             {
@@ -77,8 +75,8 @@ namespace KozakSUS0
             return tabXY;
         }        
 
-        //Wyswietlanie readFile
-        static void Show(string[,] tabXY)
+        //Wyswietlanie tablicy
+        static void ShowTab(string[,] tabXY)
         {
             for(int i=0;i<tabXY.GetLength(0);i++)
             {
@@ -88,69 +86,154 @@ namespace KozakSUS0
                 }
                 Console.WriteLine();
             }
-        }
-
-
-       
+        }       
 
         static void BudowaDrzewa(string[,] tabData)
         {
-            Console.WriteLine("Nr maxGainRatio: " + MaxGainRatio());
-            List<string> listDiffrentSign = new List<string>();
+           List<double> listaGains=InfoTList(CountSign(tabData), tabData);
 
-            for(int i=0;i<tabData.GetLength(0);i++)
+            Console.WriteLine();
+            Console.WriteLine("Tablica: ");
+            ShowTab(tabData);
+            Console.WriteLine();
+
+            int nrColumnMaxRatio = MaxGainRatio(listaGains);
+            List<string> listDiffrentSign = new List<string>();
+            bool ifGainZero = false;
+
+            Console.WriteLine("Gain List");
+            foreach (var item in listaGains)
             {
-                int nrColumn = MaxGainRatio();
-               // Console.WriteLine(tabData[i,nrColumn].ToString());
-                if(!listDiffrentSign.Contains(tabData[i, nrColumn]))
+               
+                if(double.IsNaN(item) || item<=0)
                 {
-                    listDiffrentSign.Add(tabData[i, nrColumn]);
+                    ifGainZero = true;
+                    Console.Write("Tak jest NAN:   ");
+                }
+                else
+                {
+                    ifGainZero = false;
+                }
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine("Nr columny z max gainRatio: "+nrColumnMaxRatio);
+          
+
+            Console.WriteLine("listDiffrentSign");
+            Console.WriteLine("tabData.GetLength(0): "+ tabData.GetLength(0)+ " tabData.GetLength(1): "+tabData.GetLength(1));
+            //dzielenie tabeli na poszczegolne grupy wzgeledum kolumny dzie jest maxGainRatio
+            for (int i=0;i<tabData.GetLength(0);i++)
+            {                
+                if(!listDiffrentSign.Contains(tabData[i, nrColumnMaxRatio]))
+                {
+                    Console.WriteLine("x "+tabData[i, nrColumnMaxRatio].ToString());
+                    listDiffrentSign.Add(tabData[i, nrColumnMaxRatio]);
                 }
             }
 
             List<string> tempList = new List<string>();
-            string[,] tabTemp= new string[10, 10];
-            int nrLines = 0;
+            string[,] tabTemp;
+            int nrLines;
+            int nrcolumns = tabData.GetLength(1)-1;
 
+            //przez każdy różny znak w kolumnie idzie
             foreach (var item in listDiffrentSign)
             {
-                
-                for (int i = 0; i < tabData.GetLength(0); i++)
-                {
-                    if (tabData[i, MaxGainRatio()] == item)
-                    {
-                        nrLines++;                        
-                    }
-                }
-                tabTemp = new string[nrLines, tabData.GetLength(1)];
+                Console.WriteLine(item);
 
+                nrLines = 0;
+                //sprawdzane jest ile razy wystepuje dany item w danej kolumnie
                 for (int i = 0; i < tabData.GetLength(0); i++)
                 {
-                    if (tabData[i, MaxGainRatio()] == item)
-                    {
-                        
+                    if (tabData[i, nrColumnMaxRatio] == item)
+                       nrLines++;                    
+                }
+               
+                tabTemp = new string[nrLines,nrcolumns];
+              
+                Console.WriteLine("Ilosc wierszy: " + nrLines + "  ilosc kolumn:" + nrcolumns);
+
+                //tworzenie nowej tablicy
+                int k = 0, l = 0;
+                for (int i = 0; i < tabData.GetLength(0); i++)
+                {
+                    if (tabData[i, nrColumnMaxRatio] == item)
+                    {                        
                         for (int j = 1; j < tabData.GetLength(1); j++)
                         {
-                            tabTemp[i, j] = tabData[i, j];                            
+                            tabTemp[k, l] = tabData[i, j];
+                            l++;
                         }
-                    }
+                        l = 0;
+                        k++;
+                    }                  
                 }
 
-                if(MaxGainRatio()>0)
-                    BudowaDrzewa(tabTemp);
+                //wys gain-ow
+                List<double> tempGains = InfoTList(CountSign(tabTemp), tabTemp);
 
-                for(int i=0;i<tabTemp.GetLength(0);i++)
+
+                Console.WriteLine("Gain List");
+               // Console.WriteLine("CountSign(tabTemp)");
+
+                foreach (var x in CountSign(tabTemp))
                 {
-                    for(int j=0;j<tabTemp.GetLength(1);j++)
+                    foreach (var y in x)
                     {
-                        Console.Write(tabTemp[i, j]+" ");
+                       // Console.Write(y);
                     }
-                   Console.WriteLine();
+                    //Console.WriteLine();
                 }
 
+                foreach (var gain in tempGains)
+                {
+                    if (double.IsNaN(gain) || gain <= 0)
+                    {
+                        ifGainZero = true;
+                      //  Console.Write("Tak jest NAN:   ");
+                    }
+                    else
+                    {
+                        ifGainZero = false;
+                        break;
+                    }
+
+                    //Console.WriteLine(gain+" if: "+ifGainZero);
+                }
+
+                string decision = tabTemp[0, tabTemp.GetLength(1)-1];
+                Console.WriteLine(decision);
+                for (int i = 0; i < tabTemp.GetLength(0); i++)
+                {
+                    for (int j = 0; j < tabTemp.GetLength(1); j++)
+                    {
+                        Console.Write(tabTemp[i, j] +" ");
+                    }
+                    Console.WriteLine();
+                }
+                
+               
+               // ShowListAT(tabTemp);
+
+                if(!ifGainZero)
+                   BudowaDrzewa(tabTemp);
             }
-            
+
         }
+
+        static void Calculating(string[,] tabxy)
+        {
+            List<double> listag=InfoTList(CountSign(tabxy), tabxy);
+            MaxGainRatio(listag);
+
+            foreach (var item in listag)
+            {
+                Console.WriteLine(item);
+            }      
+
+        }
+
 
         //liczy ilosc wystapien danego znaku w kolumnie
         static List<Dictionary<string, int>> CountSign(string[,] tabsXY)
@@ -163,68 +246,73 @@ namespace KozakSUS0
             {
                 for(int j=0;j<tabsXY.GetLength(0);j++)
                 {
-                   // Console.Write(tabsXY[j, i]+" ");
-                  
-                    if (dictNum.ContainsKey(tabsXY[j,i]))
+                    // Console.Write(tabsXY[j, i]+" ");
+                    if (tabsXY[j, i] != null)
                     {
-                        dictNum[tabsXY[j, i]]++;
-                    }
-                    else
-                    {
-                        dictNum[tabsXY[j, i]] = 1;
+                        if (dictNum.ContainsKey(tabsXY[j, i]))
+                        {
+                            dictNum[tabsXY[j, i]]++;
+                        }
+                        else
+                        {
+                            dictNum[tabsXY[j, i]] = 1;
+                        }
                     }
                 }
 
                 listDic.Add(dictNum);
                 dictNum = new Dictionary<string, int>();
-                Console.WriteLine();
+               // Console.WriteLine();
             }
             return listDic;
         }
 
         
+
         //liczenie InfoList(T)
-        static void InfoTList(List<Dictionary<string, int>> listDictionary,string[,] tabXY)
+        static List<double> InfoTList(List<Dictionary<string, int>> listDictionary,string[,] tabXY)
         {
             int nrColum = 0;
-            
+            List<double> listGain = new List<double>();
+
             foreach (var dic in listDictionary)
             {
-                SpliInfoT(dic,nrColum,tabXY);
-                Console.WriteLine();
+                listGain.Add(SpliInfoT(dic, nrColum, tabXY));
+               // Console.WriteLine(dic);
                 nrColum++;
             }
+
+
+            return listGain;
         }
 
        
         //Obliczanie SplitInfo(T)
-        static void SpliInfoT(Dictionary<string,int> dic,int nrColumn,string[,] tabXY)
+        static double SpliInfoT(Dictionary<string,int> dic,int nrColumn,string[,] tabXY)
         {
             int sumValue = 0;
             double logSum;
 
             foreach (var x in dic)
             {
-                Console.Write(x.Key + ": " + x.Value + "  ");
+              // Console.Write(x.Key + ": " + x.Value + "  ");
                 sumValue += x.Value;
             }
-            Console.Write("   Suma: " + sumValue);
-
-            
+           // Console.Write("   Suma: " + sumValue);            
 
             logSum= Log2Sum(dic, sumValue);
-
             logSum *= -1;
-            Console.WriteLine(" SplitInfo(T): " + logSum);
+          //  Console.WriteLine(" SplitInfo(T): " + logSum);
             
-            CountInfo(dic,sumValue,nrColumn,logSum,tabXY);
-        }       
+            double gainRatioValue= GainRatioList(dic,sumValue,nrColumn,logSum,tabXY);
+            return gainRatioValue;
+        }
 
         //Liczenie ilosci wystapien poszczegolnych znakow
-        static void CountInfo(Dictionary<string, int> dictionaryInfo,double sumValue,int nrColumn,double infoXTvalue,string[,] tabXY)
+        static double GainRatioList(Dictionary<string, int> dictionaryInfo,double sumValue,int nrColumn,double infoXTvalue,string[,] tabXY)
         {
             Dictionary<string, int> dictionary2;
-            double logSum;
+            double logSum=0;
             double sumTotal = 0;
 
             foreach (var x in dictionaryInfo)
@@ -235,7 +323,8 @@ namespace KozakSUS0
                 for (int i = 0; i < tabXY.GetLength(0); i++)
                 {
 
-                    if (x.Key == tabXY[i, nrColumn])
+                    if (x.Key == tabXY[i, nrColumn] & tabXY[i, tabXY.GetLength(1) - 1]!=null)
+                  // if ( tabXY[i, tabXY.GetLength(1) - 1]!=null)
                     {
                         if (dictionary2.ContainsKey(tabXY[i, tabXY.GetLength(1) - 1]))
                         {
@@ -247,7 +336,9 @@ namespace KozakSUS0
                         }
 
                         quantitySign++;
+                       // Console.WriteLine("quantitySign"+quantitySign);
                     }
+                   // Console.WriteLine("quantitySign" + quantitySign);
                 }
 
                 logSum=Log2Sum(dictionary2, quantitySign);
@@ -257,17 +348,22 @@ namespace KozakSUS0
 
             }
             
-            Console.WriteLine("X Info(x,T): " + sumTotal);
+           // Console.WriteLine("X Info(x,T): " + sumTotal);
             double gain = InfoT(tabXY) - sumTotal;
-            Console.WriteLine("X Gain: " + gain);
-            Console.WriteLine("X SplitInfo: " +  infoXTvalue);
+           // Console.WriteLine("X Gain: " + gain);
+           // Console.WriteLine("X SplitInfo: " +  infoXTvalue);
             double gainRatio= (InfoT(tabXY) - sumTotal)/ infoXTvalue;
-            Console.WriteLine("X GainRatio: " + gainRatio );
+           // Console.WriteLine("X GainRatio: " + gainRatio );
             listInfo.Add(sumTotal);
             listGain.Add(gain);
             listSplitInfo.Add(infoXTvalue);
-            listGainRatio.Add(gainRatio);
-            Console.WriteLine();
+            listGainRatio2.Add(gainRatio);
+            //Console.WriteLine();
+
+
+           // MaxGainRatio(listGainRatio);
+
+            return gainRatio;
         }
 
 
@@ -293,7 +389,9 @@ namespace KozakSUS0
 
             int length = tabXY.GetLength(0);
             for (int i = 0; i < length ; i++)
-            { 
+            {
+                if (tabXY[i, tabXY.GetLength(1) - 1] != null)
+                {
                     if (dictionary2.ContainsKey(tabXY[i, tabXY.GetLength(1) - 1]))
                     {
                         dictionary2[tabXY[i, tabXY.GetLength(1) - 1]]++;
@@ -304,12 +402,36 @@ namespace KozakSUS0
                     }
 
                     quantitySign++;
+                }
             }
             
             infoTv = Log2Sum(dictionary2, quantitySign)*-1;
 
 
             return infoTv;
+        }
+
+
+
+        static int MaxGainRatio(List<double> listGainR)
+        {
+            int maxInt = 0;
+            if (listGainR.Count > 0)
+            {
+                double maxGainR = listGainR[0];
+
+                for (int i = 0; i < listGainR.Count; i++)
+                {
+                    if (listGainR[i] > maxGainR)
+                    {
+                        maxGainR = listGainR[i];
+                        maxInt = i;
+                    }
+                }
+            }
+
+           // Console.WriteLine(maxInt);
+            return maxInt;
         }
 
 
@@ -341,7 +463,7 @@ namespace KozakSUS0
 
             Console.WriteLine();
 
-            foreach (var item in listGainRatio)
+            foreach (var item in listGainRatio2)
             {
                 Console.WriteLine("GainRatio: " + item);
             }
@@ -352,25 +474,6 @@ namespace KozakSUS0
         }
 
 
-        static int MaxGainRatio()
-        {
-            // double maxGainRatioValue = 0;
-            int maxInt = 0;
-            if (listGainRatio.Count > 0)
-            {
-               double maxGainR= listGainRatio[0];
-
-                for (int i = 0; i < listGainRatio.Count; i++)
-                {
-                    if (listGainRatio[i] > maxGainR)
-                    {
-                        maxGainR= listGainRatio[i];
-                        maxInt = i;
-                    }
-                }
-            }
-            return maxInt;
-        }
 
     }
 }
