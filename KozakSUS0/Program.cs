@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Input;
 
 namespace KozakSUS0
 {
@@ -26,8 +28,8 @@ namespace KozakSUS0
         {
             string[,] tabData1;
 
-            string path = "D:/Dokumenty/Studia/mgr2/Systemy uczące się/gielda.txt";
-           // string path = "D:/Dokumenty/Studia/mgr2/Systemy uczące się/temp.txt";
+           // string path = "D:/Dokumenty/Studia/mgr2/Systemy uczące się/breast-cancer.data";
+            string path = "D:/Dokumenty/Studia/mgr2/Systemy uczące się/test2.txt";
             SizeTab(path);
 
             tabData1 = ReadFile(path);          
@@ -86,50 +88,62 @@ namespace KozakSUS0
                 }
                 Console.WriteLine();
             }
-        }       
+        }
+
+        static int licznik = 0;
+        static int actualColumn = 0;
+
+        static int positionX = 0;
+        static int positionY = 0;
+     
 
         static void BudowaDrzewa(string[,] tabData)
         {
+            //  licznik++;
+            
            List<double> listaGains=InfoTList(CountSign(tabData), tabData);
 
-            Console.WriteLine();
-            Console.WriteLine("Tablica: ");
-            ShowTab(tabData);
-            Console.WriteLine();
+
+          //  Console.WriteLine();
+          //  Console.WriteLine("Tablica: ");
+           // ShowTab(tabData);
+           /// Console.WriteLine();
+
 
             int nrColumnMaxRatio = MaxGainRatio(listaGains);
+            actualColumn = nrColumnMaxRatio + 1;
+            //Console.WriteLine("actualColumn: "+actualColumn);
             List<string> listDiffrentSign = new List<string>();
             bool ifGainZero = false;
 
-            Console.WriteLine("Gain List");
-            foreach (var item in listaGains)
-            {
-               
-                if(double.IsNaN(item) || item<=0)
-                {
-                    ifGainZero = true;
-                    Console.Write("Tak jest NAN:   ");
-                }
-                else
-                {
-                    ifGainZero = false;
-                }
-                Console.WriteLine(item);
-            }
+           //// Console.WriteLine("Gain List");
+           // foreach (var item in listaGains)
+           // {
+           //     if (double.IsNaN(item) || item <= 0)
+           //     {
+           //         ifGainZero = true;
+           //         //Console.Write("Tak jest NAN:   ");
+           //     }
+           //     else
+           //     {
+           //         ifGainZero = false;
+           //     }
+           //    // Console.WriteLine("gain: " + item);
+           // }
 
-            Console.WriteLine("Nr columny z max gainRatio: "+nrColumnMaxRatio);
-          
+          //  Console.WriteLine("Nr columny z max gainRatio: " + nrColumnMaxRatio);
 
-            Console.WriteLine("listDiffrentSign");
-            Console.WriteLine("tabData.GetLength(0): "+ tabData.GetLength(0)+ " tabData.GetLength(1): "+tabData.GetLength(1));
             //dzielenie tabeli na poszczegolne grupy wzgeledum kolumny dzie jest maxGainRatio
             for (int i=0;i<tabData.GetLength(0);i++)
             {                
-                if(!listDiffrentSign.Contains(tabData[i, nrColumnMaxRatio]))
+               if(listaGains.Count!=0)
                 {
-                    Console.WriteLine("x "+tabData[i, nrColumnMaxRatio].ToString());
-                    listDiffrentSign.Add(tabData[i, nrColumnMaxRatio]);
+                    if (!listDiffrentSign.Contains(tabData[i, nrColumnMaxRatio]))
+                    {
+                        listDiffrentSign.Add(tabData[i, nrColumnMaxRatio]);
+                    }
                 }
+                  
             }
 
             List<string> tempList = new List<string>();
@@ -140,7 +154,14 @@ namespace KozakSUS0
             //przez każdy różny znak w kolumnie idzie
             foreach (var item in listDiffrentSign)
             {
-                Console.WriteLine(item);
+                // if (licznik > 0)
+                //  Console.Write("      ");
+
+                Console.SetCursorPosition(positionX, positionY);
+                Console.Write(item+"  -->  " );
+                positionY++;
+                
+              
 
                 nrLines = 0;
                 //sprawdzane jest ile razy wystepuje dany item w danej kolumnie
@@ -151,8 +172,6 @@ namespace KozakSUS0
                 }
                
                 tabTemp = new string[nrLines,nrcolumns];
-              
-                Console.WriteLine("Ilosc wierszy: " + nrLines + "  ilosc kolumn:" + nrcolumns);
 
                 //tworzenie nowej tablicy
                 int k = 0, l = 0;
@@ -167,59 +186,53 @@ namespace KozakSUS0
                         }
                         l = 0;
                         k++;
-                    }                  
-                }
+                    }                            
+                }                
 
                 //wys gain-ow
                 List<double> tempGains = InfoTList(CountSign(tabTemp), tabTemp);
-
-
-                Console.WriteLine("Gain List");
-               // Console.WriteLine("CountSign(tabTemp)");
-
-                foreach (var x in CountSign(tabTemp))
-                {
-                    foreach (var y in x)
-                    {
-                       // Console.Write(y);
-                    }
-                    //Console.WriteLine();
-                }
 
                 foreach (var gain in tempGains)
                 {
                     if (double.IsNaN(gain) || gain <= 0)
                     {
                         ifGainZero = true;
-                      //  Console.Write("Tak jest NAN:   ");
                     }
                     else
                     {
+                        positionX+=5;
                         ifGainZero = false;
                         break;
                     }
-
-                    //Console.WriteLine(gain+" if: "+ifGainZero);
+                  //  Console.WriteLine("gain2: "+gain);
                 }
 
-                string decision = tabTemp[0, tabTemp.GetLength(1)-1];
-                Console.WriteLine(decision);
-                for (int i = 0; i < tabTemp.GetLength(0); i++)
+                string decision = "";
+              
+                   if(tabTemp.GetLength(1) - 1>0)
+                    decision = tabTemp[0, tabTemp.GetLength(1)-1];
+                   else               
+                    Console.WriteLine(" Brak podział");
+                   
+                if (!ifGainZero)
                 {
-                    for (int j = 0; j < tabTemp.GetLength(1); j++)
-                    {
-                        Console.Write(tabTemp[i, j] +" ");
-                    }
-                    Console.WriteLine();
+                    //++licznik;
+                    BudowaDrzewa(tabTemp);
+                   /// licznik = 0;
+                    positionX = 0;
+                    //Console.WriteLine(decision);
+                }else
+                {
+                    //if (licznik > 0)
+                        //Console.Write("      ");
+                  //  ++actualColumn;
+                    Console.WriteLine("  "+ decision);
+                    positionY++;
+                    //--actualColumn;
+                   // Console.WriteLine();
                 }
+            }          
                 
-               
-               // ShowListAT(tabTemp);
-
-                if(!ifGainZero)
-                   BudowaDrzewa(tabTemp);
-            }
-
         }
 
         static void Calculating(string[,] tabxy)
@@ -246,7 +259,7 @@ namespace KozakSUS0
             {
                 for(int j=0;j<tabsXY.GetLength(0);j++)
                 {
-                    // Console.Write(tabsXY[j, i]+" ");
+                     //Console.Write(tabsXY[j, i]+" ");
                     if (tabsXY[j, i] != null)
                     {
                         if (dictNum.ContainsKey(tabsXY[j, i]))
@@ -278,7 +291,7 @@ namespace KozakSUS0
             foreach (var dic in listDictionary)
             {
                 listGain.Add(SpliInfoT(dic, nrColum, tabXY));
-               // Console.WriteLine(dic);
+                //Console.WriteLine(dic);
                 nrColum++;
             }
 
@@ -373,7 +386,14 @@ namespace KozakSUS0
             foreach (var item in dictionary2)
             {
                 double tempx = (double)item.Value / quantitySign;
-                logSum += tempx * Math.Log2(tempx);
+                
+               // if (double.IsNaN(Math.Log2(tempx)))
+                //    logSum = 0;
+                //else
+                    logSum += tempx * Math.Log2(tempx);
+
+                //logSum += tempx * Math.Log2(tempx);
+
             }
 
             return logSum;
